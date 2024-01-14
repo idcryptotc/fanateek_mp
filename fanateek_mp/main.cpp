@@ -9,7 +9,15 @@ int main(int argc, char* argv[])
     std::wstring info{};
     bool isExit{ false };
     std::wstring mode_str{};
-    std::wstring menu{ L"\n0 - Выбрать файл и начать воспроизведение\n2 - Закрыть файл\n3 - Выход\n" };
+    std::wstring menu
+    {
+        std::format(L"\n0 - {0}\n1 - {1}\n2 - {2}\n3 - {3}\n"
+        , L"Выбрать файл и начать воспроизведение"
+            , L"Выбрать несколько файлов"
+            , L"Закрыть файл"
+            , L"Выход")
+    };
+    std::list<std::wstring> tracks;
 
     std::wcout << menu;
 
@@ -26,36 +34,47 @@ int main(int argc, char* argv[])
                 {
                     std::wstring track_address{};
 
-                    if (!getMp3(track_address))
+                    if (getMp3(track_address))
                     {
-                        return 0;
+                        std::size_t track_begin_name = track_address.rfind('\\') + 1;
+                        std::size_t track_size_name = track_address.rfind('.') - track_begin_name;
+                        std::wstring track_name = track_address.substr(track_begin_name, track_size_name);
+                        std::wstring for_open = std::format(L"open \"{0}\" type mpegvideo alias mp3", track_address);
+                        mciSendString(L"close mp3", NULL, 0, NULL);
+                        mode_str = L"closed";
+
+                        switch (mciSendString(for_open.data(), NULL, 0, NULL))
+                        {
+                            case 0:
+                            {
+                                mciSendString(L"status mp3 length", dur, 128, 0);
+                                std::uint32_t s_all{ std::stoi(dur) / 1000u }, m{ s_all / 60u }, s{ s_all % 60u };
+                                info = std::format(L"{0}:{1:02}\t", m, s) + track_name + L"\n";
+                                mciSendString(L"play mp3", NULL, 0, NULL);
+                                break;
+                            }
+                            case MCIERR_INTERNAL:
+                            {
+                                std::wcout << "Не могу воспроизвести песенку. Попробуйте установить кодеки\n";
+                                break;
+                            }
+                            default:
+                            {
+                                std::wcout << L"Oops... Звоните в рельсу\n";
+                                break;
+                            }
+                        }
                     }
 
-                    std::size_t track_begin_name = track_address.rfind('\\') + 1;
-                    std::size_t track_size_name = track_address.rfind('.') - track_begin_name;
-                    std::wstring track_name = track_address.substr(track_begin_name, track_size_name);
-                    auto for_open = std::format(L"open \"{0}\" type mpegvideo alias mp3", track_address);
-                    mciSendString(L"close mp3", NULL, 0, NULL);
-                    mode_str = L"closed";
-
-                    if (mciSendString(for_open.data(), NULL, 0, NULL))
-                    {
-                        std::wcout << L"Oops...\n";
-                        break;
-                    }
-                    else
-                    {
-                        mciSendString(L"status mp3 length", dur, 128, 0);
-                        std::uint32_t s_all{ std::stoi(dur) / 1000u }, m{ s_all / 60u }, s{ s_all % 60u };
-                        info = std::format(L"{0}:{1:02}\t", m, s) + track_name + L"\n";
-                    }
-
-                    mciSendString(L"play mp3", NULL, 0, NULL);
                     break;
                 }
                 case '1':
                 {
-                    mciSendString(L"status mp3 mode", mode, 128, 0);
+                    if (multiGetMp3(tracks))
+                    {
+
+                    }
+
                     break;
                 }
                 case '2':
@@ -69,11 +88,6 @@ int main(int argc, char* argv[])
                     mciSendString(L"close mp3", NULL, 0, NULL);
                     isExit = true;
                     break;
-                }
-                case '4':
-                {
-                    std::list<std::wstring> tracks;
-                    multiGetMp3(tracks);
                 }
             }
         }
