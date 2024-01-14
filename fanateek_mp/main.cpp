@@ -35,10 +35,13 @@ int main(int argc, char* argv[])
                     std::size_t track_size_name = track_address.rfind('.') - track_begin_name;
                     std::wstring track_name = track_address.substr(track_begin_name, track_size_name);
                     auto for_open = std::format(L"open \"{0}\" type mpegvideo alias mp3", track_address);
+                    mciSendString(L"close mp3", NULL, 0, NULL);
+                    mode_str = L"closed";
 
                     if (mciSendString(for_open.data(), NULL, 0, NULL))
                     {
                         std::wcout << L"Oops...\n";
+                        break;
                     }
                     else
                     {
@@ -63,19 +66,30 @@ int main(int argc, char* argv[])
                 }
                 case '3':
                 {
+                    mciSendString(L"close mp3", NULL, 0, NULL);
                     isExit = true;
                     break;
+                }
+                case '4':
+                {
+                    std::list<std::wstring> tracks;
+                    multiGetMp3(tracks);
                 }
             }
         }
 
         mciSendString(L"status mp3 mode", mode, 128, 0);
 
-        if (mode_str != mode)
+        if (mode_str != mode && mode[0] != '\0')
         {
             mode_str = mode;
             system("cls");
             std::wcout << mode_str << "\t" << info << menu;
+
+            if (mode_str == L"stopped")
+            {
+                mciSendString(L"close mp3", NULL, 0, NULL);
+            }
         }
     }
 
