@@ -19,27 +19,48 @@
     <Filter Include="player">
       <UniqueIdentifier>{b4c259a9-140a-4d2f-b68d-ea9357e4c583}</UniqueIdentifier>
     </Filter>
+    <Filter Include="playlist">
+      <UniqueIdentifier>{6369ac78-cc9a-4154-83b1-e6ad2ab456f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="track">
+      <UniqueIdentifier>{6beb8a20-6d6c-46c8-9c01-4a9c43f4709f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{771ad03b-6ce7-4b60-a8fb-6e8f7e7db1a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="dialog.cpp">
       <Filter>helpers</Filter>
     </ClCompile>
     <ClCompile Include="player.cpp">
       <Filter>player</Filter>
     </ClCompile>
+    <ClCompile Include="playlist.cpp">
+      <Filter>playlist</Filter>
+    </ClCompile>
+    <ClCompile Include="track.cpp">
+      <Filter>track</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="main.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="dialog.h">
       <Filter>helpers</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
       <Filter>player</Filter>
+    </ClInclude>
+    <ClInclude Include="playlist.h">
+      <Filter>playlist</Filter>
+    </ClInclude>
+    <ClInclude Include="track.h">
+      <Filter>track</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>main</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
