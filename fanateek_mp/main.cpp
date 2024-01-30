@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
                 {
                     if (multiGetMp3(tracks))
                     {
-                        //тест2
+                        
                     }
 
                     break;
